@@ -1,0 +1,14 @@
+# ESP-IDF build output
+build/
+cmake-build-*/
+
+# ESP-IDF generated config backup
+sdkconfig.old
+
+# CLion IDE files
+.idea/
+
+# Compiled binaries
+*.elf
+*.bin
+*.map
