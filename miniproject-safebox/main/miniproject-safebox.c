@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <soc/gpio_num.h>
@@ -42,7 +41,6 @@ static TaskHandle_t led_task_handle = NULL;
 
 enum SAFE_BOX_STATE {
     UNKNOWN,
-    SAFE_BOX_SECRET_SETUP,
     SAFE_BOX_DIAL_READING,
     SAFE_BOX_OPEN,
     SAFE_BOX_ERROR
@@ -95,11 +93,6 @@ void app_main(void) {
     while (1) {
         if (last_app_state != safe_box_state) {
             switch (safe_box_state) {
-                case SAFE_BOX_SECRET_SETUP:
-                    printf("Please enter the secret_code: ");
-                    scanf("%1d%1d%1d%1d", &secret_code[0], &secret_code[1], &secret_code[2], &secret_code[3]);
-                    safe_box_state = SAFE_BOX_DIAL_READING;
-                    break;
                 case SAFE_BOX_DIAL_READING:
                     servo_set_angle(90);
                     if (led_task_handle != NULL) {
@@ -198,7 +191,6 @@ _Noreturn void set_led_flashing_pattern(void *pvParameters) {
     while (1) {
         switch (safe_box_state) {
             case UNKNOWN:
-            case SAFE_BOX_SECRET_SETUP:
             case SAFE_BOX_DIAL_READING:
                 break;
             case SAFE_BOX_OPEN:
