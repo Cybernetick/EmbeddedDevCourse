@@ -202,8 +202,8 @@ void oled_draw_time(i2c_master_dev_handle_t device_handle, uint8_t hours, uint8_
     ESP_ERROR_CHECK(i2c_master_transmit(device_handle, buf, sizeof(buf), 200));
 }
 
-void oled_draw_date(i2c_master_dev_handle_t device_handle, uint8_t dom, uint16_t year) {
-    struct command_t set_column_address_command = {0x21, 2, {0x32, 0x54} };
+void oled_draw_date(i2c_master_dev_handle_t device_handle, uint8_t dom, uint8_t month, uint16_t year) {
+    struct command_t set_column_address_command = {0x21, 2, {0x32, 0x64} };
     oled_send_cmd(device_handle, set_column_address_command);
     struct command_t set_page_address_command = { 0x22, 2, { 0x07, 0x07 } };
     oled_send_cmd(device_handle, set_page_address_command);
@@ -213,15 +213,16 @@ void oled_draw_date(i2c_master_dev_handle_t device_handle, uint8_t dom, uint16_t
     const uint8_t font_first    = 0x20;
     const uint8_t bytes_per_char = 5;
 
-    uint8_t chars[7] = {
+    uint8_t chars[10] = {
             '0' + dom   / 10, '0' + dom   % 10, '.',
+            '0' + month   / 10, '0' + month   % 10, '.',
             '0' + year / 1000, '0' + (year / 100) % 10, '0' + (year / 10) % 10, '0' + year % 10
     };
 
-    uint8_t buf[1 + 7 * font_width];
+    uint8_t buf[1 + 10 * font_width];
     buf[0] = 0x40;
 
-    for (int c = 0; c < 7; c++) {
+    for (int c = 0; c < 10; c++) {
         uint16_t char_offset = font_header + (chars[c] - font_first) * bytes_per_char;
         for (int b = 0; b < font_width; b++) {
             buf[1 + c * font_width + b] = ssd1306xled_font5x7_AB[char_offset + b];

@@ -52,7 +52,7 @@ void oled_control_task(void *pvParameters) {
     oled_clear(display_handle);
     while (1) {
         oled_draw_time(display_handle, time.hour, time.min, time.sec);
-        oled_draw_date(display_handle, time.day, time.year);
+        oled_draw_date(display_handle, time.day, time.month, time.year);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
